@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+
+<img src="d:\photo\Camera\٢٠٢٥٠٥١٧_١٩١٤١٥.jpg" width="200px  " height="360px">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>رسائل مشفرة - تواصل آمن طرفيًا</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      max-width: 750px;
+      margin: auto;
+      direction: rtl;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      color: #1a365d;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #4a5568;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    button {
+      background: #3182ce;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 8px 5px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #2c5aa0;
+    }
+    #decryptBtn {
+      background: #e53e3e;
+    }
+    #decryptBtn:hover {
+      background: #c53030;
+    }
+    .result-box {
+      background: #edf2f7;
+      padding: 18px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+      direction: ltr;
+      text-align: left;
+    }
+    .link-display {
+      background: #ebf8ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      word-break: break-all;
+    }
+    .error {
+      color: #e53e3e;
+      font-weight: bold;
+    }
+    .success {
+      color: #38a169;
+    }
+    .info {
+      background: #fff8e6;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-size: 14px;
+      border-right: 4px solid #d69e2e;
+    }
+  </style>
+</head>
+<body>
+  <h1>    اما حياة تسر الصديق واما ممات يغيظ العداء</h1>
+  <h1>🔐 مراسلة مشفرة طرفياً  </h1>
+  <p class="subtitle">آمنة — لا يراها أحد إلا من يعرف كلمة السر</p>
+
+  <div class="info">
+    ⚠️ <strong>كيف تستخدمه؟</strong><br>
+    1. اتفق مع الطرف الآخر على <strong>كلمة سر سرية</strong> (مثل: "MySecretKey!2026").<br>
+    2. اكتب رسالتك → اضغط "تشفير" → انسخ الرابط.<br>
+    3. أرسل الرابط لصديقك.<br>
+    4. سيُدخل نفس كلمة السر لرؤية الرسالة.
+  </div>
+
+  <!-- قسم التشفير -->
+  <div class="card">
+    <label for="senderName">اسمك (اختياري):</label>
+    <input type="text" id="senderName" placeholder="مثال: علي">
+
+    <label for="message">الرسالة السرية:</label>
+    <textarea id="message" placeholder="اكتب رسالتك هنا... (يدعم العربية والإنجليزية)"></textarea>
+
+    <label for="password">كلمة السر السرية (يجب أن يعرفها المستقبل):</label>
+    <input type="password" id="password" placeholder="أدخل كلمة سر قوية">
+
+    <button onclick="encryptAndShare()">🔐 تشفير وإنشاء رابط</button>
+
+    <div id="linkContainer" style="display:none;">
+      <label>ارسل هذا الرابط لصديقك:</label>
+      <div class="link-display" id="shareLink"></div>
+    </div>
+  </div>
+
+  <!-- قسم فك التشفير (يظهر تلقائياً إذا كان الرابط يحتوي على رسالة) -->
+  <div class="card" id="decryptSection" style="display:none;">
+    <h3>🔓 فك تشفير الرسالة</h3>
+    
+    <label for="decryptPassword">أدخل كلمة السر التي اتفقت عليها مع المرسِل:</label>
+    <input type="password" id="decryptPassword" placeholder="كلمة السر السرية">
+    
+    <button id="decryptBtn" onclick="decryptMessage()">عرض الرسالة</button>
+    
+    <div id="output" style="display:none;" class="result-box"></div>
+  </div>
+
+  <script>
+    // =============== دوال مساعدة ===============
+    const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+    const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
+
+    // =============== التشفير ===============
+    async function encryptAndShare() {
+      const sender = document.getElementById('senderName').value.trim() || 'مرسِل';
+      const message = document.getElementById('message').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!message || !password) {
+        alert("⚠️ يرجى إدخال الرسالة وكلمة السر.");
+        return;
+      }
+
+      try {
+        const fullText = `${sender}:\n${message}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(fullText);
+
+        // توليد salt و iv عشوائيين
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+
+        // اشتقاق المفتاح من كلمة السر
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          encoder.encode(password),
+          { name: "PBKDF2" },
+          false,
+          ["deriveKey"]
+        );
+
+        const aesKey = await crypto.subtle.deriveKey(
+          { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["encrypt"]
+        );
+
+        // التشفير
+        const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, data);
+
+        // دمج salt + iv + ciphertext
+        const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+        result.set(salt, 0);
+        result.set(iv, salt.length);
+        result.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+        const encryptedB64 = uint8ToBase64(result);
+        const urlSafe = encodeURIComponent(encryptedB64);
+        const fullUrl = `${window.location.origin}${window.location.pathname}?msg=${urlSafe}`;
+
+        // عرض الرابط
+        document.getElementById('shareLink').textContent = fullUrl;
+        document.getElementById('linkContainer').style.display = 'block';
+
+        // نسخ الرابط تلقائياً (إذا سمح المتصفح)
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(fullUrl).then(() => {
+            document.getElementById('shareLink').classList.add('success');
+            document.getElementById('shareLink').textContent += " ✅ (تم النسخ)";
+          }).catch(() => {});
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ حدث خطأ أثناء التشفير: " + (err.message || "خطأ غير معروف"));
+      }
+    }
+
+    // =============== فك التشفير ===============
+    async function decryptMessage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const encryptedParam = urlParams.get('msg');
+      const password = document.getElementById('decryptPassword').value;
+
+      if (!encryptedParam || !password) {
+        alert("⚠️ لا توجد رسالة مشفرة أو لم تُدخل كلمة السر.");
+        return;
+      }
+
+      
+      try {
+        const encryptedB64 = decodeURIComponent(encryptedParam);
+        const bytes = base64ToUint8(encryptedB64);
+
+        if (bytes.length < 28) throw new Error("بيانات مشفرة غير صالحة.");
+
+        const salt = bytes.slice(0, 16);
+        const iv = bytes.slice(16, 28);
+        const encryptedData = bytes.slice(28);
+
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          encoder.encode(password),
+          { name: "PBKDF2" },
+          false,
+          ["deriveKey"]
+        );
+
+        const aesKey = await crypto.subtle.deriveKey(
+          { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["decrypt"]
+        );
+
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, aesKey, encryptedData);
+        const decoder = new TextDecoder();
+        const plaintext = decoder.decode(decrypted);
+
+        document.getElementById('output').textContent = plaintext;
+        document.getElementById('output').style.display = 'block';
+        document.getElementById('output').className = 'result-box success';
+      } catch (err) {
+        document.getElementById('output').textContent = "❌ فشل فك التشفير! تأكد من أن كلمة السر صحيحة.";
+        document.getElementById('output').className = 'result-box error';
+        document.getElementById('output').style.display = 'block';
+      }
+    }
+
+    // =============== تشغيل عند تحميل الصفحة ===============
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('msg')) {
+        document.getElementById('decryptSection').style.display = 'block';
+        // يمكنك تمرير التركيز إلى حقل كلمة السر
+        document.getElementById('decryptPassword').focus();
+      }
+    });
+  </script>
+</body>
+</html>
