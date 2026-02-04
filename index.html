@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,243 +5,336 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>رسائل مشفرة - تواصل آمن طرفيًا</title>
 
-  <!-- Font Awesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yQF4bJXzVf5n+YdRqKkCvZrNlGyHtOcDpWmEhA3wUe7jB9xLqJ7u3gM9i8J9aS4yZxXf8yJ7qI8j7sJ7qI8j7sJ7qI8j7sJ7q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
-      padding: 20px;
+      background-image: url('434ae862-1033-44e1-a974-995af22eb45.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+      min-height: 100vh;
+      padding: 30px 20px;
+      color: #2d3748;
+    }
+
+    /* طبقة شبه شفافة فوق الخلفية */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: -1;
+    }
+
+    .container {
       max-width: 750px;
-      margin: auto;
-      direction: rtl;
-      line-height: 1.6;
+      margin: 0 auto;
     }
-    .logo {
-      display: block;
-      margin: 0 auto 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h1 {
+
+    .header {
       text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
       color: #1a365d;
       margin-bottom: 8px;
-      font-size: 1.8rem;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
+
     .subtitle {
-      text-align: center;
       color: #4a5568;
-      font-size: 14px;
-      margin-bottom: 20px;
+      font-size: 15px;
+      margin-bottom: 25px;
     }
+
     .card {
       background: white;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-      margin-bottom: 25px;
-      transition: transform 0.2s;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      margin-bottom: 30px;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
+
     .card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
     }
+
     label {
       display: block;
-      margin: 14px 0 8px;
+      margin: 16px 0 10px;
       font-weight: 600;
+      font-size: 16px;
       color: #2d3748;
-      font-size: 15px;
     }
+
     input, textarea {
       width: 100%;
       padding: 14px;
       border: 1px solid #cbd5e0;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 16px;
       font-family: inherit;
-      transition: border-color 0.2s;
+      transition: all 0.25s;
     }
+
     input:focus, textarea:focus {
       outline: none;
       border-color: #3182ce;
-      box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+      box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.25);
     }
+
     textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
     }
+
     .btn-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 12px;
+      margin-top: 15px;
     }
+
     button {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      background: #3182ce;
-      color: white;
+      padding: 13px 22px;
       border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
+      border-radius: 12px;
       font-size: 16px;
       font-weight: 600;
+      cursor: pointer;
       transition: all 0.25s ease;
       flex: 1;
       min-width: 140px;
-      justify-content: center;
     }
+
+    .btn-primary { background: #3182ce; color: white; }
+    .btn-danger { background: #e53e3e; color: white; }
+    .btn-whatsapp { background: #25D366; color: white; }
+    .btn-secondary { background: #718096; color: white; }
+
     button:hover {
-      background: #2c5aa0;
+      opacity: 0.92;
       transform: translateY(-2px);
     }
-    #decryptBtn {
-      background: #e53e3e;
-    }
-    #decryptBtn:hover {
-      background: #c53030;
-    }
-    .whatsapp-btn {
-      background: #25D366;
-    }
-    .whatsapp-btn:hover {
-      background: #1da851;
-    }
-    .clear-btn {
-      background: #718096;
-    }
-    .clear-btn:hover {
-      background: #4a5568;
-    }
-    .result-box, .link-display {
-      background: #edf2f7;
+
+    .link-display, .result-box {
+      background: #f8fafc;
       padding: 18px;
-      border-radius: 10px;
-      margin-top: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
       font-family: monospace;
       white-space: pre-wrap;
       word-break: break-word;
       direction: ltr;
       text-align: left;
       font-size: 15px;
+      border: 1px solid #e2e8f0;
     }
-    .link-display {
-      background: #ebf8ff;
-      position: relative;
-    }
-    .error {
-      color: #e53e3e;
-      font-weight: bold;
-    }
-    .success {
-      color: #38a169;
-    }
+
     .info {
-      background: #fff8e6;
-      padding: 15px;
-      border-radius: 12px;
-      margin: 20px 0;
+      background: #fffbeb;
+      padding: 18px;
+      border-radius: 14px;
+      margin: 25px 0;
       font-size: 14px;
-      border-right: 4px solid #d69e2e;
       line-height: 1.7;
+      border-right: 4px solid #d69e2e;
     }
-    .notification {
+
+    /* Modal Styles */
+    .modal {
+      display: none;
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      border-radius: 8px;
-      color: white;
-      font-weight: 600;
       z-index: 1000;
-      opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.4s ease;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.3s;
     }
-    .notification.show {
-      opacity: 1;
-      transform: translateX(0);
+
+    .modal-content {
+      background-color: white;
+      margin: 12% auto;
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      animation: slideIn 0.4s;
     }
-    .notification.success { background: #38a169; }
-    .notification.error { background: #e53e3e; }
+
+    .modal-header {
+      margin-bottom: 20px;
+    }
+
+    .modal-header i {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .modal.success .modal-header i { color: #38a169; }
+    .modal.error .modal-header i { color: #e53e3e; }
+
+    .modal-footer {
+      margin-top: 25px;
+    }
+
+    .modal button {
+      padding: 12px 25px;
+      min-width: auto;
+      flex: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .btn-group {
+        flex-direction: column;
+      }
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <img src="434ae862-1033-44e1-a974-995af22eb45.jpeg" alt="شعار" width="360" height="200" class="logo">
-
-  <h1>أما حياة تسر الصديق وأما ممات يغيظ العداء</h1>
-  <h1>🔐 مراسلة مشفرة طرفياً</h1>
-  <p class="subtitle">آمنة — لا يراها أحد إلا من يعرف كلمة السر</p>
-
-  <div class="info">
-    ⚠️ <strong>كيف تستخدمه؟</strong><br>
-    1. اتفق مع الطرف الآخر على <strong>كلمة سر سرية</strong> (مثل: "MySecretKey!2026").<br>
-    2. اكتب رسالتك → اضغط "تشفير" → انسخ الرابط.<br>
-    3. أرسل الرابط لصديقك عبر واتساب أو أي وسيلة.<br>
-    4. سيُدخل نفس كلمة السر لرؤية الرسالة.
-  </div>
-
-  <!-- قسم التشفير -->
-  <div class="card" id="encryptCard">
-    <label for="senderName"><i class="fas fa-user"></i> اسمك (اختياري):</label>
-    <input type="text" id="senderName" placeholder="مثال: علي">
-
-    <label for="message"><i class="fas fa-envelope"></i> الرسالة السرية:</label>
-    <textarea id="message" placeholder="اكتب رسالتك هنا... (يدعم العربية والإنجليزية)"></textarea>
-
-    <label for="password"><i class="fas fa-key"></i> كلمة السر السرية:</label>
-    <input type="password" id="password" placeholder="أدخل كلمة سر قوية">
-
-    <div class="btn-group">
-      <button onclick="encryptAndShare()"><i class="fas fa-lock"></i> تشفير وإنشاء رابط</button>
-      <button class="clear-btn" onclick="clearFields()"><i class="fas fa-trash"></i> مسح</button>
+  <div class="container">
+    <div class="header">
+      <h1>أما حياة تسر الصديق وأما ممات يغيظ العداء</h1>
+      <h1>🔐 مراسلة مشفرة طرفياً</h1>
+      <p class="subtitle">آمنة — لا يراها أحد إلا من يعرف كلمة السر</p>
     </div>
 
-    <div id="linkContainer" style="display:none; margin-top: 20px;">
-      <label><i class="fas fa-link"></i> أرسل هذا الرابط لصديقك:</label>
-      <div class="link-display" id="shareLink"></div>
-      <div class="btn-group" style="margin-top: 12px;">
-        <button onclick="copyLink()"><i class="fas fa-copy"></i> نسخ الرابط</button>
-        <button class="whatsapp-btn" onclick="shareToWhatsApp()"><i class="fab fa-whatsapp"></i> مشاركة عبر واتساب</button>
+    <div class="info">
+      ⚠️ <strong>كيف تستخدمه؟</strong><br>
+      1. اتفق مع الطرف الآخر على <strong>كلمة سر سرية</strong>.<br>
+      2. اكتب رسالتك → اضغط "تشفير" → انسخ الرابط.<br>
+      3. أرسل الرابط لصديقك عبر واتساب أو البريد.<br>
+      4. سيُدخل نفس كلمة السر لرؤية الرسالة.
+    </div>
+
+    <!-- قسم التشفير -->
+    <div class="card" id="encryptCard">
+      <label for="senderName"><i class="fas fa-user"></i> اسمك (اختياري):</label>
+      <input type="text" id="senderName" placeholder="مثال: علي">
+
+      <label for="message"><i class="fas fa-envelope"></i> الرسالة السرية:</label>
+      <textarea id="message" placeholder="اكتب رسالتك هنا... (يدعم العربية والإنجليزية)"></textarea>
+
+      <label for="password"><i class="fas fa-key"></i> كلمة السر السرية:</label>
+      <input type="password" id="password" placeholder="أدخل كلمة سر قوية">
+
+      <div class="btn-group">
+        <button class="btn-primary" onclick="encryptAndShare()"><i class="fas fa-lock"></i> تشفير وإنشاء رابط</button>
+        <button class="btn-secondary" onclick="clearFields()"><i class="fas fa-trash"></i> مسح</button>
+      </div>
+
+      <div id="linkContainer" style="display:none; margin-top: 25px;">
+        <label><i class="fas fa-link"></i> أرسل هذا الرابط لصديقك:</label>
+        <div class="link-display" id="shareLink"></div>
+        <div class="btn-group" style="margin-top: 18px;">
+          <button class="btn-secondary" onclick="copyLink()"><i class="fas fa-copy"></i> نسخ الرابط</button>
+          <button class="btn-whatsapp" onclick="shareToWhatsApp()"><i class="fab fa-whatsapp"></i> مشاركة عبر واتساب</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم فك التشفير -->
+    <div class="card" id="decryptSection" style="display:none;">
+      <h3 style="margin-bottom: 20px;"><i class="fas fa-unlock"></i> فك تشفير الرسالة</h3>
+      
+      <label for="decryptPassword"><i class="fas fa-key"></i> كلمة السر:</label>
+      <input type="password" id="decryptPassword" placeholder="أدخل كلمة السر التي اتفقت عليها">
+      
+      <div class="btn-group">
+        <button class="btn-danger" onclick="decryptMessage()"><i class="fas fa-eye"></i> عرض الرسالة</button>
+      </div>
+      
+      <div id="output" style="display:none;" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- Modal Template -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3 id="modal-title">تنبيه</h3>
+      </div>
+      <p id="modal-message"></p>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeModal()">موافق</button>
       </div>
     </div>
   </div>
-
-  <!-- قسم فك التشفير -->
-  <div class="card" id="decryptSection" style="display:none;">
-    <h3><i class="fas fa-unlock"></i> فك تشفير الرسالة</h3>
-    
-    <label for="decryptPassword"><i class="fas fa-key"></i> كلمة السر:</label>
-    <input type="password" id="decryptPassword" placeholder="أدخل كلمة السر التي اتفقت عليها">
-    
-    <div class="btn-group">
-      <button id="decryptBtn" onclick="decryptMessage()"><i class="fas fa-eye"></i> عرض الرسالة</button>
-    </div>
-    
-    <div id="output" style="display:none;" class="result-box"></div>
-  </div>
-
-  <!-- Notification Toast -->
-  <div id="notification" class="notification"></div>
 
   <script>
     // =============== دوال مساعدة ===============
     const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
     const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
-    function showNotification(message, type = 'success') {
-      const notif = document.getElementById('notification');
-      notif.textContent = message;
-      notif.className = `notification ${type}`;
-      notif.classList.add('show');
-      setTimeout(() => notif.classList.remove('show'), 3000);
+    function showModal(message, type = 'error') {
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modal-title');
+      const msg = document.getElementById('modal-message');
+      const icon = modal.querySelector('.modal-header i');
+
+      if (type === 'success') {
+        title.textContent = 'نجاح';
+        icon.className = 'fas fa-check-circle';
+        modal.className = 'modal success';
+      } else {
+        title.textContent = 'خطأ';
+        icon.className = 'fas fa-exclamation-circle';
+        modal.className = 'modal error';
+      }
+
+      msg.textContent = message;
+      modal.style.display = 'block';
     }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) closeModal();
+    };
 
     function clearFields() {
       document.getElementById('senderName').value = '';
@@ -255,16 +347,16 @@
       const link = document.getElementById('shareLink').textContent.replace(/ ✅ \(تم النسخ\)$/, '').trim();
       try {
         await navigator.clipboard.writeText(link);
-        showNotification("✅ تم نسخ الرابط بنجاح!", "success");
+        showModal("تم نسخ الرابط بنجاح!", "success");
       } catch (err) {
-        showNotification("❌ فشل النسخ. حاول يدويًا.", "error");
+        showModal("فشل النسخ. يُرجى النسخ يدويًا.", "error");
       }
     }
 
     function shareToWhatsApp() {
       const link = document.getElementById('shareLink').textContent.replace(/ ✅ \(تم النسخ\)$/, '').trim();
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent("مرحباً! أرسلت لك رسالة سرية:\n\n" + link)}`;
-      window.open(whatsappUrl, '_blank');
+      const text = encodeURIComponent("مرحباً! أرسلت لك رسالة سرية:\n\n" + link);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 
     // =============== التشفير ===============
@@ -274,7 +366,7 @@
       const password = document.getElementById('password').value;
 
       if (!message || !password) {
-        showNotification("⚠️ أدخل الرسالة وكلمة السر", "error");
+        showModal("يرجى إدخال الرسالة وكلمة السر.");
         return;
       }
 
@@ -287,19 +379,15 @@
         const iv = crypto.getRandomValues(new Uint8Array(12));
 
         const keyMaterial = await crypto.subtle.importKey(
-          "raw",
-          encoder.encode(password),
-          { name: "PBKDF2" },
-          false,
-          ["deriveKey"]
+          "raw", encoder.encode(password),
+          { name: "PBKDF2" }, false, ["deriveKey"]
         );
 
         const aesKey = await crypto.subtle.deriveKey(
           { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
           keyMaterial,
           { name: "AES-GCM", length: 256 },
-          false,
-          ["encrypt"]
+          false, ["encrypt"]
         );
 
         const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, data);
@@ -316,21 +404,19 @@
         document.getElementById('shareLink').textContent = fullUrl;
         document.getElementById('linkContainer').style.display = 'block';
 
-        // Scroll to link
-        document.getElementById('linkContainer').scrollIntoView({ behavior: 'smooth' });
+        // Scroll smoothly
+        document.getElementById('linkContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
         // Try auto-copy
         if (navigator.clipboard) {
           try {
             await navigator.clipboard.writeText(fullUrl);
             document.getElementById('shareLink').textContent += " ✅ (تم النسخ)";
-          } catch (e) {
-            // silent fail
-          }
+          } catch (e) {}
         }
       } catch (err) {
         console.error(err);
-        showNotification("❌ خطأ في التشفير: " + (err.message || "غير معروف"), "error");
+        showModal("حدث خطأ أثناء التشفير: " + (err.message || "خطأ غير معروف"));
       }
     }
 
@@ -341,15 +427,14 @@
       const password = document.getElementById('decryptPassword').value;
 
       if (!encryptedParam || !password) {
-        showNotification("⚠️ أدخل كلمة السر", "error");
+        showModal("أدخل كلمة السر لعرض الرسالة.");
         return;
       }
 
       try {
         const encryptedB64 = decodeURIComponent(encryptedParam);
         const bytes = base64ToUint8(encryptedB64);
-
-        if (bytes.length < 28) throw new Error("بيانات غير صالحة");
+        if (bytes.length < 28) throw new Error("بيانات مشفرة غير صالحة");
 
         const salt = bytes.slice(0, 16);
         const iv = bytes.slice(16, 28);
@@ -357,19 +442,15 @@
 
         const encoder = new TextEncoder();
         const keyMaterial = await crypto.subtle.importKey(
-          "raw",
-          encoder.encode(password),
-          { name: "PBKDF2" },
-          false,
-          ["deriveKey"]
+          "raw", encoder.encode(password),
+          { name: "PBKDF2" }, false, ["deriveKey"]
         );
 
         const aesKey = await crypto.subtle.deriveKey(
           { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
           keyMaterial,
           { name: "AES-GCM", length: 256 },
-          false,
-          ["decrypt"]
+          false, ["decrypt"]
         );
 
         const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, aesKey, encryptedData);
@@ -378,10 +459,10 @@
 
         document.getElementById('output').textContent = plaintext;
         document.getElementById('output').style.display = 'block';
-        document.getElementById('output').className = 'result-box success';
+        document.getElementById('output').className = 'result-box';
       } catch (err) {
-        document.getElementById('output').textContent = "❌ فشل فك التشفير! تأكد من كلمة السر.";
-        document.getElementById('output').className = 'result-box error';
+        document.getElementById('output').textContent = "❌ فشل فك التشفير! تأكد من أن كلمة السر صحيحة.";
+        document.getElementById('output').className = 'result-box';
         document.getElementById('output').style.display = 'block';
       }
     }
@@ -392,8 +473,7 @@
       if (urlParams.has('msg')) {
         document.getElementById('decryptSection').style.display = 'block';
         document.getElementById('decryptPassword').focus();
-        // Scroll to decrypt section
-        document.getElementById('decryptSection').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('decryptSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   </script>
