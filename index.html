@@ -7,8 +7,12 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     :root {
@@ -135,6 +139,19 @@
       box-shadow: var(--shadow);
       text-align: center;
       transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--success);
+      color: white;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: bold;
     }
 
     .feature-card:hover {
@@ -211,6 +228,7 @@
     .btn-danger { background: var(--danger); color: white; }
     .btn-whatsapp { background: var(--whatsapp); color: white; }
     .btn-secondary { background: var(--gray); color: white; }
+    .btn-location { background: #38a169; color: white; }
 
     button:hover {
       opacity: 0.92;
@@ -246,6 +264,15 @@
       margin: 30px 0;
     }
 
+    /* Map */
+    #locationMap {
+      height: 250px;
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 20px;
+      display: none;
+    }
+
     /* Modal */
     .modal {
       display: none;
@@ -276,7 +303,7 @@
     @media (max-width: 600px) {
       .btn-group { flex-direction: column; }
       button { width: 100%; }
-      .nav-links { display: none; } /* يمكنك إضافة قائمة هامبرغر لاحقًا */
+      .nav-links { display: none; }
     }
   </style>
 </head>
@@ -306,12 +333,18 @@
       <div class="info">
         ⚠️ <strong>كيف تستخدمه؟</strong><br>
         1. اتفق مع الطرف الآخر على <strong>كلمة سر سرية</strong>.<br>
-        2. اذهب إلى "تشفير" → أدخل رسالتك → ولّد رابطًا.<br>
+        2. اذهب إلى "تشفير" → أدخل رسالتك → أضف موقعك إن رغبت → ولّد رابطًا.<br>
         3. أرسل الرابط لصديقك.<br>
-        4. سيذهب إلى "فك التشفير" ويُدخل نفس كلمة السر.
+        4. سيذهب إلى "فك التشفير" ويُدخل نفس كلمة السر لرؤية الرسالة والموقع.
       </div>
 
       <div class="card-grid">
+        <div class="feature-card" onclick="showPage('encrypt')">
+          <div class="badge">جديد!</div>
+          <i class="fas fa-map-marker-alt"></i>
+          <h3>إرسال الموقع</h3>
+          <p>أرفق موقعك الجغرافي مع الرسالة المشفرة</p>
+        </div>
         <div class="feature-card" onclick="showPage('encrypt')">
           <i class="fas fa-lock"></i>
           <h3>تشفير رسالة</h3>
@@ -320,12 +353,7 @@
         <div class="feature-card" onclick="showPage('decrypt')">
           <i class="fas fa-unlock"></i>
           <h3>فك تشفير</h3>
-          <p>أدخل الرابط وكلمة السر لرؤية الرسالة</p>
-        </div>
-        <div class="feature-card" onclick="showPage('features')">
-          <i class="fas fa-shield-alt"></i>
-          <h3>الأمان</h3>
-          <p>تشفير طرفي 100% — لا بيانات تُخزن على الخوادم</p>
+          <p>أدخل الرابط وكلمة السر لرؤية الرسالة والموقع</p>
         </div>
         <div class="feature-card" onclick="showPage('stats')">
           <i class="fas fa-chart-bar"></i>
@@ -345,12 +373,19 @@
         <label for="message"><i class="fas fa-envelope"></i> الرسالة السرية:</label>
         <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
 
+        <label><i class="fas fa-map-marker-alt"></i> الموقع الجغرافي (اختياري):</label>
+        <div class="btn-group">
+          <button class="btn-location" onclick="getLocation()"><i class="fas fa-location-arrow"></i> إرفاق موقعي</button>
+          <button class="btn-secondary" onclick="clearLocation()"><i class="fas fa-times"></i> إزالة الموقع</button>
+        </div>
+        <input type="hidden" id="locationInput" value="">
+
         <label for="password"><i class="fas fa-key"></i> كلمة السر السرية:</label>
         <input type="password" id="password" placeholder="أدخل كلمة سر قوية">
 
         <div class="btn-group">
           <button class="btn-primary" onclick="encryptAndShare()"><i class="fas fa-lock"></i> تشفير وإنشاء رابط</button>
-          <button class="btn-secondary" onclick="clearFields()"><i class="fas fa-trash"></i> مسح</button>
+          <button class="btn-secondary" onclick="clearFields()"><i class="fas fa-trash"></i> مسح الكل</button>
         </div>
 
         <div id="linkContainer" style="display:none; margin-top: 25px;">
@@ -378,6 +413,7 @@
         </div>
         
         <div id="output" style="display:none;" class="result-box"></div>
+        <div id="locationMap"></div>
       </div>
     </div>
 
@@ -387,12 +423,12 @@
       <div class="card">
         <ul style="padding-right: 20px; line-height: 2;">
           <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> تشفير طرفي (End-to-End Encryption)</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> إرسال الموقع الجغرافي بشكل آمن</li>
           <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> لا يتم تخزين أي بيانات على الخوادم</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> خريطة تفاعلية عند فك التشفير</li>
           <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> دعم كامل للغة العربية والاتجاه RTL</li>
-          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> واجهة مستخدم حديثة وسهلة</li>
           <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> مشاركة مباشرة عبر واتساب</li>
-          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> إحصائيات استخدام شخصية</li>
-          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> يعمل 100% في المتصفح — لا حاجة لتنزيل</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> يعمل 100% في المتصفح</li>
         </ul>
       </div>
     </div>
@@ -427,9 +463,9 @@
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
-      document.querySelector(`.nav-links a[onclick*="${pageId}"]`).classList.add('active');
+      const activeLink = document.querySelector(`.nav-links a[onclick*="${pageId}"]`);
+      if (activeLink) activeLink.classList.add('active');
 
-      // تحديث المخطط عند عرض صفحة الإحصائيات
       if (pageId === 'stats') renderChart();
     }
 
@@ -437,7 +473,6 @@
     const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
     const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
-    // تتبع الإحصائيات محليًا
     function incrementStat(type) {
       const key = `crypto_stats_${type}`;
       let count = localStorage.getItem(key) || 0;
@@ -446,6 +481,35 @@
 
     function getStat(type) {
       return parseInt(localStorage.getItem(`crypto_stats_${type}`) || 0);
+    }
+
+    // =============== الموقع الجغرافي ===============
+    let currentLocation = null;
+
+    function getLocation() {
+      if (!navigator.geolocation) {
+        showModal("المتصفح لا يدعم تحديد الموقع.", "error");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          currentLocation = { lat: latitude, lng: longitude };
+          document.getElementById('locationInput').value = JSON.stringify(currentLocation);
+          showModal("✅ تم التقاط موقعك بنجاح!", "success");
+        },
+        (error) => {
+          let msg = "فشل الحصول على الموقع.";
+          if (error.code === 1) msg = "يرجى السماح بالوصول إلى الموقع.";
+          showModal(msg, "error");
+        }
+      );
+    }
+
+    function clearLocation() {
+      currentLocation = null;
+      document.getElementById('locationInput').value = '';
+      showModal("تم إزالة الموقع.", "success");
     }
 
     // =============== واجهة المستخدم ===============
@@ -468,6 +532,7 @@
       document.getElementById('senderName').value = '';
       document.getElementById('message').value = '';
       document.getElementById('password').value = '';
+      clearLocation();
       document.getElementById('linkContainer').style.display = 'none';
     }
 
@@ -492,14 +557,20 @@
       const sender = document.getElementById('senderName').value.trim() || 'مرسِل';
       const message = document.getElementById('message').value.trim();
       const password = document.getElementById('password').value;
+      const locationStr = document.getElementById('locationInput').value;
+      const hasLocation = locationStr.trim() !== '';
 
-      if (!message || !password) {
-        showModal("يرجى إدخال الرسالة وكلمة السر.");
+      if ((!message && !hasLocation) || !password) {
+        showModal("يرجى إدخال رسالة أو موقع، وكلمة السر.");
         return;
       }
 
       try {
-        const fullText = `${sender}:\n${message}`;
+        let fullText = `${sender}:\n${message || "(لا توجد رسالة)"}`;
+        if (hasLocation) {
+          fullText += `\n\n📍 الموقع المرفق: ${locationStr}`;
+        }
+
         const encoder = new TextEncoder();
         const data = encoder.encode(fullText);
 
@@ -532,10 +603,8 @@
         document.getElementById('shareLink').textContent = fullUrl;
         document.getElementById('linkContainer').style.display = 'block';
 
-        // تسجيل الإحصائية
         incrementStat('encrypt');
 
-        // محاولة النسخ التلقائي
         if (navigator.clipboard) {
           try {
             await navigator.clipboard.writeText(fullUrl);
@@ -588,18 +657,39 @@
         document.getElementById('output').textContent = plaintext;
         document.getElementById('output').style.display = 'block';
 
-        // تسجيل الإحصائية
+        // استخراج الموقع إن وُجد
+        const mapDiv = document.getElementById('locationMap');
+        mapDiv.style.display = 'none';
+        mapDiv.innerHTML = '';
+        let map;
+
+        const locationMatch = plaintext.match(/📍 الموقع المرفق: (\{.*?\})/);
+        if (locationMatch) {
+          try {
+            const loc = JSON.parse(locationMatch[1]);
+            mapDiv.style.display = 'block';
+            map = L.map('locationMap').setView([loc.lat, loc.lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap'
+            }).addTo(map);
+            L.marker([loc.lat, loc.lng]).addTo(map)
+              .bindPopup('الموقع المرفق').openPopup();
+          } catch (e) {
+            console.warn("Invalid location data");
+          }
+        }
+
         incrementStat('decrypt');
       } catch (err) {
         document.getElementById('output').textContent = "❌ فشل فك التشفير! تأكد من أن كلمة السر صحيحة.";
         document.getElementById('output').style.display = 'block';
+        document.getElementById('locationMap').style.display = 'none';
       }
     }
 
     // =============== المخطط البياني ===============
     function renderChart() {
       const ctx = document.getElementById('usageChart').getContext('2d');
-      // Destroy previous chart if exists
       if (window.usageChart) window.usageChart.destroy();
 
       const encryptCount = getStat('encrypt');
@@ -607,11 +697,11 @@
 
       window.usageChart = new Chart(ctx, {
         type: 'bar',
-        data: {
+         {
           labels: ['التشفير', 'فك التشفير'],
           datasets: [{
             label: 'عدد العمليات',
-            data: [encryptCount, decryptCount],
+             [encryptCount, decryptCount],
             backgroundColor: ['#3182ce', '#e53e3e'],
             borderWidth: 0,
             borderRadius: 6,
