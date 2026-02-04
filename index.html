@@ -3,274 +3,320 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🔐 رسائل مشفرة - خصوصية تامة</title>
+  <title>رسائل مشفرة - آمنة طرفيًا</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <!-- خط عربي -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    :root {
-      --primary-color: #4a90e2;
-      --secondary-color: #673ab7;
-      --accent-color: #ff4081;
-      --glass-bg: rgba(255, 255, 255, 0.9);
-    }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Tajawal', sans-serif;
-      /* إضافة خلفية صورة مع تعتيم خفيف */
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                  url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1920');
-      background-size: cover;
-      background-attachment: fixed;
-      background-position: center;
-      color: #333;
-      min-height: 100vh;
-      padding-top: 80px;
+      background: #f5f7fa;
+      color: #1a202c;
+      padding-top: 70px;
+      direction: rtl;
     }
 
     /* Navbar */
     .navbar {
       position: fixed;
-      top: 0; width: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding: 15px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-    .nav-logo { color: white; font-size: 1.5rem; font-weight: bold; }
-    .nav-links a {
-      color: rgba(255,255,255,0.8);
-      text-decoration: none;
-      margin-right: 15px;
-      transition: 0.3s;
-    }
-    .nav-links a.active { color: white; font-weight: bold; border-bottom: 2px solid var(--accent-color); }
-
-    /* Glass Container */
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      background: var(--glass-bg);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-      backdrop-filter: blur(5px);
-    }
-
-    .page { display: none; }
-    .page.active { display: block; animation: slideUp 0.5s ease; }
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    h2 { color: var(--secondary-color); margin-bottom: 20px; text-align: center; }
-    
-    label { display: block; margin: 15px 0 5px; font-weight: bold; color: #555; }
-    
-    input, textarea {
-      width: 100%; padding: 12px; border: 2px solid #eee;
-      border-radius: 12px; font-family: inherit; font-size: 1rem;
-      transition: 0.3s;
-    }
-    input:focus { border-color: var(--primary-color); outline: none; }
-
-    /* Buttons */
-    .btn {
+      top: 0;
       width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
+      background: #3182ce;
+      color: white;
+      padding: 0 20px;
+      height: 60px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: 0.3s;
-      margin-top: 10px;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 100;
     }
-    .btn-primary { background: var(--primary-color); color: white; }
-    .btn-secondary { background: #6c757d; color: white; margin-top: 5px; }
-    .btn-share { background: #25d366; color: white; } /* لون واتساب */
-    .btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    .nav-logo { font-size: 1.4rem; font-weight: bold; }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 600;
+    }
+    .nav-links a.active { text-decoration: underline; }
 
-    .link-box {
-      background: #f8f9fa;
-      border: 1px dashed var(--primary-color);
+    /* Main */
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.4s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    h1, h2 { margin: 20px 0; color: #2d3748; }
+    label { display: block; margin: 15px 0 8px; font-weight: 600; }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+
+    button {
+      background: #3182ce;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 8px 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { opacity: 0.9; }
+    #decryptBtn { background: #e53e3e; }
+
+    .result-box, .link-display {
+      background: #edf2f7;
       padding: 15px;
-      border-radius: 10px;
-      margin-top: 15px;
-      word-break: break-all;
-      font-family: monospace;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      margin: 15px 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      direction: ltr;
+      text-align: left;
     }
 
-    #locationMap { height: 200px; border-radius: 12px; margin-top: 15px; display: none; }
-    .hidden { display: none; }
+    #locationMap {
+      height: 250px;
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
 
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
+  <!-- Navigation -->
   <nav class="navbar">
-    <div class="nav-logo"><i class="fas fa-user-shield"></i> آمن</div>
+    <div class="nav-logo">🔐 رسائل مشفرة</div>
     <div class="nav-links">
       <a href="#" class="nav-item active" data-page="home">الرئيسية</a>
       <a href="#" class="nav-item" data-page="encrypt">تشفير</a>
+      <a href="#" class="nav-item" data-page="decrypt">فك التشفير</a>
     </div>
   </nav>
 
   <div class="container">
-    
+
+    <!-- الصفحة الرئيسية -->
     <div id="home" class="page active">
-      <div style="text-align: center; margin-bottom: 20px;">
-        <i class="fas fa-lock-open fa-4x" style="color: var(--primary-color);"></i>
-      </div>
-      <h2>تواصل بسرية تامة</h2>
-      <p style="text-align: center; color: #666; margin-bottom: 20px;">قم بتشفير رسائلك وتحويلها إلى روابط لا يفتحها إلا من يملك كلمة السر.</p>
-      <button class="btn btn-primary" onclick="showPage('encrypt')">
-        <i class="fas fa-plus-circle"></i> إنشاء رسالة جديدة
-      </button>
-      <button class="btn btn-secondary" onclick="showPage('decrypt')">
-        <i class="fas fa-key"></i> فك تشفير رابط مستلم
-      </button>
+      <h1>مرحباً بك في رسائل مشفرة</h1>
+      <p>تطبيق آمن للتواصل السري عبر روابط مشفرة طرفياً.</p>
+      <button onclick="showPage('encrypt')">ابدأ بالتشفير</button>
+      <button onclick="showPage('decrypt')">فك تشفير رسالة</button>
     </div>
 
+    <!-- صفحة التشفير -->
     <div id="encrypt" class="page">
-      <h2><i class="fas fa-mask"></i> تشفير رسالة</h2>
-      <label>اسم المرسل:</label>
-      <input type="text" id="senderName" placeholder="اختياري...">
+      <h2>🔐 تشفير رسالة</h2>
+      <label>اسمك (اختياري):</label>
+      <input type="text" id="senderName" placeholder="مثال: أحمد">
 
-      <label>رسالتك السرية:</label>
-      <textarea id="message" placeholder="اكتب ما تريد هنا..."></textarea>
+      <label>الرسالة:</label>
+      <textarea id="message" placeholder="اكتب رسالتك السرية..."></textarea>
 
       <label>كلمة السر:</label>
       <input type="password" id="password" placeholder="كلمة سر قوية">
 
-      <button class="btn btn-primary" onclick="encryptAndShare()">
-        <i class="fas fa-magic"></i> توليد الرابط المشفر
-      </button>
+      <button onclick="encryptAndShare()"><i class="fas fa-lock"></i> تشفير وإنشاء رابط</button>
+      <button onclick="showPage('home')">العودة</button>
 
       <div id="linkContainer" class="hidden">
-        <div class="link-box" id="shareLink"></div>
-        <button class="btn btn-share" onclick="shareMessage()">
-          <i class="fas fa-share-alt"></i> مشاركة الرابط عبر التطبيقات
-        </button>
+        <label>ارسل هذا الرابط:</label>
+        <div class="link-display" id="shareLink"></div>
       </div>
     </div>
 
+    <!-- صفحة فك التشفير -->
     <div id="decrypt" class="page">
-      <h2><i class="fas fa-unlock"></i> فك التشفير</h2>
-      <p id="decryptNotice" style="margin-bottom: 10px; color: #d63031; text-align: center;"></p>
-      <label>أدخل كلمة السر لفتح الرسالة:</label>
-      <input type="password" id="decryptPassword" placeholder="كلمة السر">
-      
-      <button class="btn btn-primary" onclick="decryptMessage()">
-        <i class="fas fa-eye"></i> عرض المحتوى
-      </button>
-      
-      <div id="output" class="hidden" style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 10px;"></div>
+      <h2>🔓 فك تشفير الرسالة</h2>
+      <label>كلمة السر:</label>
+      <input type="password" id="decryptPassword" placeholder="أدخل كلمة السر">
+      <button id="decryptBtn" onclick="decryptMessage()">عرض الرسالة</button>
+      <button onclick="showPage('home')">العودة</button>
+
+      <div id="output" class="hidden result-box"></div>
       <div id="locationMap"></div>
     </div>
 
   </div>
 
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    // --- منطق التنقل ---
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(a => a.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      const navItem = document.querySelector(`.nav-item[data-page="${pageId}"]`);
-      if(navItem) navItem.classList.add('active');
-    }
 
-    // --- التشفير وفك التشفير (نفس منطقك القوي السابق مع تحسين الواجهة) ---
+  <script>
+    // =============== دوال التشفير الأساسية (لا تتغير) ===============
     const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
     const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
-    async function encryptAndShare() {
-      const sender = document.getElementById('senderName').value || 'مجهول';
-      const msg = document.getElementById('message').value;
-      const pass = document.getElementById('password').value;
-
-      if(!msg || !pass) return alert("املاً البيانات أولاً!");
-
-      const encoder = new TextEncoder();
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const keyMat = await crypto.subtle.importKey("raw", encoder.encode(pass), {name:"PBKDF2"}, false, ["deriveKey"]);
-      const key = await crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"}, keyMat, {name:"AES-GCM", length:256}, false, ["encrypt"]);
+    // =============== إدارة الصفحات ===============
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(a => a.classList.remove('active'));
       
-      const encrypted = await crypto.subtle.encrypt({name:"AES-GCM", iv}, key, encoder.encode(sender + ": " + msg));
-      
-      const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-      combined.set(salt, 0); combined.set(iv, 16); combined.set(new Uint8Array(encrypted), 28);
-      
-      const finalUrl = window.location.origin + window.location.pathname + "?msg=" + encodeURIComponent(uint8ToBase64(combined));
-      document.getElementById('shareLink').textContent = finalUrl;
-      document.getElementById('linkContainer').classList.remove('hidden');
+      document.getElementById(pageId).classList.add('active');
+      const link = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+      if (link) link.classList.add('active');
     }
 
-    // ميزة المشاركة الأصلية
-    async function shareMessage() {
-      const shareData = {
-        title: 'رسالة مشفرة',
-        text: 'أرسلت لك رسالة سرية لا يفتحها إلا أنت!',
-        url: document.getElementById('shareLink').textContent
-      };
+    // =============== التشفير ===============
+    async function encryptAndShare() {
+      const sender = document.getElementById('senderName').value.trim() || 'مرسِل';
+      const message = document.getElementById('message').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!message || !password) {
+        alert("⚠️ يرجى إدخال الرسالة وكلمة السر.");
+        return;
+      }
 
       try {
-        if (navigator.share) {
-          await navigator.share(shareData);
-        } else {
-          // نسخ للرابط إذا كان المتصفح لا يدعم المشاركة
-          navigator.clipboard.writeText(shareData.url);
-          alert("تم نسخ الرابط! يمكنك إرساله يدوياً.");
+        const fullText = `${sender}:\n${message}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(fullText);
+
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw", encoder.encode(password),
+          { name: "PBKDF2" }, false, ["deriveKey"]
+        );
+
+        const aesKey = await crypto.subtle.deriveKey(
+          { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false, ["encrypt"]
+        );
+
+        const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, data);
+
+        const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+        result.set(salt, 0);
+        result.set(iv, salt.length);
+        result.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+        const encryptedB64 = uint8ToBase64(result);
+        const urlSafe = encodeURIComponent(encryptedB64);
+        const fullUrl = `${window.location.origin}${window.location.pathname}?msg=${urlSafe}`;
+
+        document.getElementById('shareLink').textContent = fullUrl;
+        document.getElementById('linkContainer').classList.remove('hidden');
+
+        // نسخ تلقائي
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(fullUrl).catch(() => {});
         }
-      } catch (err) { console.log(err); }
+      } catch (err) {
+        console.error(err);
+        alert("❌ خطأ في التشفير: " + (err.message || "غير معروف"));
+      }
     }
 
+    // =============== فك التشفير ===============
     async function decryptMessage() {
       const urlParams = new URLSearchParams(window.location.search);
-      const b64 = urlParams.get('msg');
-      const pass = document.getElementById('decryptPassword').value;
-      
+      const encryptedParam = urlParams.get('msg');
+      const password = document.getElementById('decryptPassword').value;
+
+      if (!encryptedParam || !password) {
+        alert("⚠️ لا توجد رسالة مشفرة أو لم تُدخل كلمة السر.");
+        return;
+      }
+
       try {
-        const bytes = base64ToUint8(decodeURIComponent(b64));
+        const encryptedB64 = decodeURIComponent(encryptedParam);
+        const bytes = base64ToUint8(encryptedB64);
+        if (bytes.length < 28) throw new Error("بيانات غير صالحة");
+
         const salt = bytes.slice(0, 16);
         const iv = bytes.slice(16, 28);
-        const data = bytes.slice(28);
+        const encryptedData = bytes.slice(28);
 
         const encoder = new TextEncoder();
-        const keyMat = await crypto.subtle.importKey("raw", encoder.encode(pass), {name:"PBKDF2"}, false, ["deriveKey"]);
-        const key = await crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"}, keyMat, {name:"AES-GCM", length:256}, false, ["decrypt"]);
-        
-        const decrypted = await crypto.subtle.decrypt({name:"AES-GCM", iv}, key, data);
-        document.getElementById('output').textContent = new TextDecoder().decode(decrypted);
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw", encoder.encode(password),
+          { name: "PBKDF2" }, false, ["deriveKey"]
+        );
+
+        const aesKey = await crypto.subtle.deriveKey(
+          { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false, ["decrypt"]
+        );
+
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, aesKey, encryptedData);
+        const decoder = new TextDecoder();
+        const plaintext = decoder.decode(decrypted);
+
+        document.getElementById('output').textContent = plaintext;
         document.getElementById('output').classList.remove('hidden');
-      } catch (e) {
-        alert("كلمة السر خاطئة!");
+
+        // --- دعم الموقع ---
+        const mapDiv = document.getElementById('locationMap');
+        mapDiv.style.display = 'none';
+        mapDiv.innerHTML = '';
+
+        const locationMatch = plaintext.match(/📍 الموقع المرفق: (\{.*?\})/);
+        if (locationMatch) {
+          try {
+            const loc = JSON.parse(locationMatch[1]);
+            mapDiv.style.display = 'block';
+            const map = L.map('locationMap').setView([loc.lat, loc.lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap'
+            }).addTo(map);
+            L.marker([loc.lat, loc.lng]).addTo(map).bindPopup('الموقع المرفق').openPopup();
+          } catch (e) {
+            console.warn("Invalid location");
+          }
+        }
+      } catch (err) {
+        document.getElementById('output').textContent = "❌ فشل فك التشفير! تأكد من كلمة السر.";
+        document.getElementById('output').classList.remove('hidden');
+        document.getElementById('locationMap').style.display = 'none';
       }
     }
 
-    window.onload = () => {
+    // =============== تشغيل عند التحميل ===============
+    window.addEventListener('DOMContentLoaded', () => {
+      // ربط أزرار التنقل
+      document.querySelectorAll('.nav-item').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          showPage(link.dataset.page);
+        });
+      });
+
+      // التحقق من وجود رسالة مشفرة في الرابط
       const urlParams = new URLSearchParams(window.location.search);
-      if(urlParams.has('msg')) {
+      if (urlParams.has('msg')) {
         showPage('decrypt');
-        document.getElementById('decryptNotice').textContent = "تم اكتشاف رسالة مشفرة، أدخل المفتاح للقراءة.";
+        setTimeout(() => {
+          document.getElementById('decryptPassword').focus();
+        }, 300);
       }
-    };
+    });
   </script>
 </body>
 </html>
+
 
 
