@@ -7,8 +7,21 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    :root {
+      --primary: #3182ce;
+      --danger: #e53e3e;
+      --success: #38a169;
+      --whatsapp: #25D366;
+      --gray: #718096;
+      --light: #f8fafc;
+      --card-bg: white;
+      --shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -17,64 +30,130 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-image: url('IMG-20260204-WA0003.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      position: relative;
-      min-height: 100vh;
-      padding: 30px 20px;
+      background: linear-gradient(135deg, #f0f4f8, #e6edf5);
       color: #2d3748;
+      min-height: 100vh;
+      padding-top: 70px;
+      position: relative;
     }
 
-    /* طبقة شبه شفافة فوق الخلفية */
-    body::before {
-      content: "";
-      position: absolute;
+    /* Navbar */
+    .navbar {
+      position: fixed;
       top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.85);
-      z-index: -1;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      padding: 0 20px;
     }
 
-    .container {
-      max-width: 750px;
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1000px;
       margin: 0 auto;
+      height: 60px;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 25px;
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--primary);
     }
 
-    .header h1 {
-      font-size: 2rem;
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #4a5568;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 20px;
       color: #1a365d;
-      margin-bottom: 8px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
     }
 
     .subtitle {
+      text-align: center;
       color: #4a5568;
+      margin-bottom: 30px;
       font-size: 15px;
-      margin-bottom: 25px;
     }
 
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-      margin-bottom: 30px;
-      position: relative;
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin: 30px 0;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .feature-card i {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
     }
 
     label {
@@ -82,7 +161,6 @@
       margin: 16px 0 10px;
       font-weight: 600;
       font-size: 16px;
-      color: #2d3748;
     }
 
     input, textarea {
@@ -97,7 +175,7 @@
 
     input:focus, textarea:focus {
       outline: none;
-      border-color: #3182ce;
+      border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.25);
     }
 
@@ -129,10 +207,10 @@
       min-width: 140px;
     }
 
-    .btn-primary { background: #3182ce; color: white; }
-    .btn-danger { background: #e53e3e; color: white; }
-    .btn-whatsapp { background: #25D366; color: white; }
-    .btn-secondary { background: #718096; color: white; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-whatsapp { background: var(--whatsapp); color: white; }
+    .btn-secondary { background: var(--gray); color: white; }
 
     button:hover {
       opacity: 0.92;
@@ -140,7 +218,7 @@
     }
 
     .link-display, .result-box {
-      background: #f8fafc;
+      background: var(--light);
       padding: 18px;
       border-radius: 12px;
       margin-top: 20px;
@@ -163,17 +241,21 @@
       border-right: 4px solid #d69e2e;
     }
 
-    /* Modal Styles */
+    .chart-container {
+      height: 300px;
+      margin: 30px 0;
+    }
+
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 1001;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.6);
-      animation: fadeIn 0.3s;
     }
 
     .modal-content {
@@ -185,116 +267,153 @@
       max-width: 500px;
       text-align: center;
       box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-      animation: slideIn 0.4s;
     }
-
-    .modal-header {
-      margin-bottom: 20px;
-    }
-
-    .modal-header i {
-      font-size: 28px;
-      margin-bottom: 12px;
-    }
-
-    .modal.success .modal-header i { color: #38a169; }
-    .modal.error .modal-header i { color: #e53e3e; }
 
     .modal-footer {
       margin-top: 25px;
     }
 
-    .modal button {
-      padding: 12px 25px;
-      min-width: auto;
-      flex: none;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideIn {
-      from { transform: translateY(-30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
     @media (max-width: 600px) {
-      .btn-group {
-        flex-direction: column;
-      }
-      button {
-        width: 100%;
-      }
+      .btn-group { flex-direction: column; }
+      button { width: 100%; }
+      .nav-links { display: none; } /* يمكنك إضافة قائمة هامبرغر لاحقًا */
     }
   </style>
 </head>
 <body>
 
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">🔐 رسائل مشفرة</div>
+      <div class="nav-links">
+        <a href="#" class="active" onclick="showPage('home')">الرئيسية</a>
+        <a href="#" onclick="showPage('encrypt')">تشفير</a>
+        <a href="#" onclick="showPage('decrypt')">فك التشفير</a>
+        <a href="#" onclick="showPage('features')">الميزات</a>
+        <a href="#" onclick="showPage('stats')">الإحصائيات</a>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
-    <div class="header">
+
+    <!-- الصفحة الرئيسية -->
+    <div id="home" class="page active">
       <h1>أما حياة تسر الصديق وأما ممات يغيظ العداء</h1>
-      <h1>🔐 مراسلة مشفرة طرفياً</h1>
-      <p class="subtitle">آمنة — لا يراها أحد إلا من يعرف كلمة السر</p>
-    </div>
+      <p class="subtitle">تواصل آمن طرفيًا — لا يراها أحد إلا من يعرف كلمة السر</p>
 
-    <div class="info">
-      ⚠️ <strong>كيف تستخدمه؟</strong><br>
-      1. اتفق مع الطرف الآخر على <strong>كلمة سر سرية</strong>.<br>
-      2. اكتب رسالتك → اضغط "تشفير" → انسخ الرابط.<br>
-      3. أرسل الرابط لصديقك عبر واتساب أو البريد.<br>
-      4. سيُدخل نفس كلمة السر لرؤية الرسالة.
-    </div>
-
-    <!-- قسم التشفير -->
-    <div class="card" id="encryptCard">
-      <label for="senderName"><i class="fas fa-user"></i> اسمك (اختياري):</label>
-      <input type="text" id="senderName" placeholder="مثال: علي">
-
-      <label for="message"><i class="fas fa-envelope"></i> الرسالة السرية:</label>
-      <textarea id="message" placeholder="اكتب رسالتك هنا... (يدعم العربية والإنجليزية)"></textarea>
-
-      <label for="password"><i class="fas fa-key"></i> كلمة السر السرية:</label>
-      <input type="password" id="password" placeholder="أدخل كلمة سر قوية">
-
-      <div class="btn-group">
-        <button class="btn-primary" onclick="encryptAndShare()"><i class="fas fa-lock"></i> تشفير وإنشاء رابط</button>
-        <button class="btn-secondary" onclick="clearFields()"><i class="fas fa-trash"></i> مسح</button>
+      <div class="info">
+        ⚠️ <strong>كيف تستخدمه؟</strong><br>
+        1. اتفق مع الطرف الآخر على <strong>كلمة سر سرية</strong>.<br>
+        2. اذهب إلى "تشفير" → أدخل رسالتك → ولّد رابطًا.<br>
+        3. أرسل الرابط لصديقك.<br>
+        4. سيذهب إلى "فك التشفير" ويُدخل نفس كلمة السر.
       </div>
 
-      <div id="linkContainer" style="display:none; margin-top: 25px;">
-        <label><i class="fas fa-link"></i> أرسل هذا الرابط لصديقك:</label>
-        <div class="link-display" id="shareLink"></div>
-        <div class="btn-group" style="margin-top: 18px;">
-          <button class="btn-secondary" onclick="copyLink()"><i class="fas fa-copy"></i> نسخ الرابط</button>
-          <button class="btn-whatsapp" onclick="shareToWhatsApp()"><i class="fab fa-whatsapp"></i> مشاركة عبر واتساب</button>
+      <div class="card-grid">
+        <div class="feature-card" onclick="showPage('encrypt')">
+          <i class="fas fa-lock"></i>
+          <h3>تشفير رسالة</h3>
+          <p>أنشئ رابطًا مشفرًا لا يُفك إلا بكلمة السر</p>
+        </div>
+        <div class="feature-card" onclick="showPage('decrypt')">
+          <i class="fas fa-unlock"></i>
+          <h3>فك تشفير</h3>
+          <p>أدخل الرابط وكلمة السر لرؤية الرسالة</p>
+        </div>
+        <div class="feature-card" onclick="showPage('features')">
+          <i class="fas fa-shield-alt"></i>
+          <h3>الأمان</h3>
+          <p>تشفير طرفي 100% — لا بيانات تُخزن على الخوادم</p>
+        </div>
+        <div class="feature-card" onclick="showPage('stats')">
+          <i class="fas fa-chart-bar"></i>
+          <h3>إحصائيات</h3>
+          <p>تتبع استخدامك للتشفير عبر مخططات تفاعلية</p>
         </div>
       </div>
     </div>
 
-    <!-- قسم فك التشفير -->
-    <div class="card" id="decryptSection" style="display:none;">
-      <h3 style="margin-bottom: 20px;"><i class="fas fa-unlock"></i> فك تشفير الرسالة</h3>
-      
-      <label for="decryptPassword"><i class="fas fa-key"></i> كلمة السر:</label>
-      <input type="password" id="decryptPassword" placeholder="أدخل كلمة السر التي اتفقت عليها">
-      
-      <div class="btn-group">
-        <button class="btn-danger" onclick="decryptMessage()"><i class="fas fa-eye"></i> عرض الرسالة</button>
+    <!-- صفحة التشفير -->
+    <div id="encrypt" class="page">
+      <h2><i class="fas fa-lock"></i> تشفير رسالة جديدة</h2>
+      <div class="card">
+        <label for="senderName"><i class="fas fa-user"></i> اسمك (اختياري):</label>
+        <input type="text" id="senderName" placeholder="مثال: علي">
+
+        <label for="message"><i class="fas fa-envelope"></i> الرسالة السرية:</label>
+        <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+
+        <label for="password"><i class="fas fa-key"></i> كلمة السر السرية:</label>
+        <input type="password" id="password" placeholder="أدخل كلمة سر قوية">
+
+        <div class="btn-group">
+          <button class="btn-primary" onclick="encryptAndShare()"><i class="fas fa-lock"></i> تشفير وإنشاء رابط</button>
+          <button class="btn-secondary" onclick="clearFields()"><i class="fas fa-trash"></i> مسح</button>
+        </div>
+
+        <div id="linkContainer" style="display:none; margin-top: 25px;">
+          <label><i class="fas fa-link"></i> أرسل هذا الرابط لصديقك:</label>
+          <div class="link-display" id="shareLink"></div>
+          <div class="btn-group" style="margin-top: 18px;">
+            <button class="btn-secondary" onclick="copyLink()"><i class="fas fa-copy"></i> نسخ الرابط</button>
+            <button class="btn-whatsapp" onclick="shareToWhatsApp()"><i class="fab fa-whatsapp"></i> واتساب</button>
+          </div>
+        </div>
       </div>
-      
-      <div id="output" style="display:none;" class="result-box"></div>
     </div>
+
+    <!-- صفحة فك التشفير -->
+    <div id="decrypt" class="page">
+      <h2><i class="fas fa-unlock"></i> فك تشفير رسالة</h2>
+      <div class="card">
+        <p style="margin-bottom: 20px;">سيتم تحميل الرسالة تلقائيًا إذا كان الرابط يحتوي على رسالة مشفرة.</p>
+        
+        <label for="decryptPassword"><i class="fas fa-key"></i> كلمة السر:</label>
+        <input type="password" id="decryptPassword" placeholder="أدخل كلمة السر التي اتفقت عليها">
+        
+        <div class="btn-group">
+          <button class="btn-danger" onclick="decryptMessage()"><i class="fas fa-eye"></i> عرض الرسالة</button>
+        </div>
+        
+        <div id="output" style="display:none;" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- صفحة الميزات -->
+    <div id="features" class="page">
+      <h2><i class="fas fa-star"></i> ميزات التطبيق</h2>
+      <div class="card">
+        <ul style="padding-right: 20px; line-height: 2;">
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> تشفير طرفي (End-to-End Encryption)</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> لا يتم تخزين أي بيانات على الخوادم</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> دعم كامل للغة العربية والاتجاه RTL</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> واجهة مستخدم حديثة وسهلة</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> مشاركة مباشرة عبر واتساب</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> إحصائيات استخدام شخصية</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success); margin-left: 8px;"></i> يعمل 100% في المتصفح — لا حاجة لتنزيل</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- صفحة الإحصائيات -->
+    <div id="stats" class="page">
+      <h2><i class="fas fa-chart-pie"></i> إحصائيات استخدامك</h2>
+      <div class="card">
+        <p>يتم تتبع عدد مرات التشفير وفك التشفير محليًا فقط (في جهازك).</p>
+        <div class="chart-container">
+          <canvas id="usageChart"></canvas>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Modal Template -->
+  <!-- Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <i class="fas fa-exclamation-circle"></i>
-        <h3 id="modal-title">تنبيه</h3>
-      </div>
+      <h3 id="modal-title">تنبيه</h3>
       <p id="modal-message"></p>
       <div class="modal-footer">
         <button class="btn-primary" onclick="closeModal()">موافق</button>
@@ -303,28 +422,38 @@
   </div>
 
   <script>
+    // =============== إدارة الصفحات ===============
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      document.querySelector(`.nav-links a[onclick*="${pageId}"]`).classList.add('active');
+
+      // تحديث المخطط عند عرض صفحة الإحصائيات
+      if (pageId === 'stats') renderChart();
+    }
+
     // =============== دوال مساعدة ===============
     const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
     const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
+    // تتبع الإحصائيات محليًا
+    function incrementStat(type) {
+      const key = `crypto_stats_${type}`;
+      let count = localStorage.getItem(key) || 0;
+      localStorage.setItem(key, parseInt(count) + 1);
+    }
+
+    function getStat(type) {
+      return parseInt(localStorage.getItem(`crypto_stats_${type}`) || 0);
+    }
+
+    // =============== واجهة المستخدم ===============
     function showModal(message, type = 'error') {
-      const modal = document.getElementById('modal');
       const title = document.getElementById('modal-title');
-      const msg = document.getElementById('modal-message');
-      const icon = modal.querySelector('.modal-header i');
-
-      if (type === 'success') {
-        title.textContent = 'نجاح';
-        icon.className = 'fas fa-check-circle';
-        modal.className = 'modal success';
-      } else {
-        title.textContent = 'خطأ';
-        icon.className = 'fas fa-exclamation-circle';
-        modal.className = 'modal error';
-      }
-
-      msg.textContent = message;
-      modal.style.display = 'block';
+      title.textContent = type === 'success' ? 'نجاح' : 'خطأ';
+      document.getElementById('modal-message').textContent = message;
+      document.getElementById('modal').style.display = 'block';
     }
 
     function closeModal() {
@@ -332,8 +461,7 @@
     }
 
     window.onclick = function(event) {
-      const modal = document.getElementById('modal');
-      if (event.target === modal) closeModal();
+      if (event.target.id === 'modal') closeModal();
     };
 
     function clearFields() {
@@ -404,10 +532,10 @@
         document.getElementById('shareLink').textContent = fullUrl;
         document.getElementById('linkContainer').style.display = 'block';
 
-        // Scroll smoothly
-        document.getElementById('linkContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // تسجيل الإحصائية
+        incrementStat('encrypt');
 
-        // Try auto-copy
+        // محاولة النسخ التلقائي
         if (navigator.clipboard) {
           try {
             await navigator.clipboard.writeText(fullUrl);
@@ -459,24 +587,62 @@
 
         document.getElementById('output').textContent = plaintext;
         document.getElementById('output').style.display = 'block';
-        document.getElementById('output').className = 'result-box';
+
+        // تسجيل الإحصائية
+        incrementStat('decrypt');
       } catch (err) {
         document.getElementById('output').textContent = "❌ فشل فك التشفير! تأكد من أن كلمة السر صحيحة.";
-        document.getElementById('output').className = 'result-box';
         document.getElementById('output').style.display = 'block';
       }
     }
 
-    // =============== تشغيل عند تحميل الصفحة ===============
+    // =============== المخطط البياني ===============
+    function renderChart() {
+      const ctx = document.getElementById('usageChart').getContext('2d');
+      // Destroy previous chart if exists
+      if (window.usageChart) window.usageChart.destroy();
+
+      const encryptCount = getStat('encrypt');
+      const decryptCount = getStat('decrypt');
+
+      window.usageChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['التشفير', 'فك التشفير'],
+          datasets: [{
+            label: 'عدد العمليات',
+            data: [encryptCount, decryptCount],
+            backgroundColor: ['#3182ce', '#e53e3e'],
+            borderWidth: 0,
+            borderRadius: 6,
+            barThickness: 80
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+
+    // =============== تشغيل عند التحميل ===============
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('msg')) {
-        document.getElementById('decryptSection').style.display = 'block';
+        showPage('decrypt');
         document.getElementById('decryptPassword').focus();
-        document.getElementById('decryptSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   </script>
 </body>
 </html>
-
